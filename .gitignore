@@ -10,3 +10,9 @@ coverage/
 .env.*
 !.env.example
 
+# private: logging and summary tools
+src/log.js
+src/summary.js
+scripts/summarize-run.js
+test/summary.test.js
+
