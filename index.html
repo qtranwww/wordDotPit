@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Word Collision</title>
+  </head>
+  <body>
+    <main>
+      <h1>Word Collision</h1>
+      <p>Category: <strong id="category">animal</strong></p>
+      <label for="answer">Your one-word answer</label>
+      <input id="answer" autocomplete="off" />
+      <button id="submit">Submit</button>
+      <section id="results" aria-live="polite"></section>
+    </main>
+    <script type="module">
+      import { scoreRound } from "./src/engine.js";
+      import { createSimulatedPlayers } from "./src/simulated-ai.js";
+
+      const category = "animal";
+      const simulated = createSimulatedPlayers(category, 20);
+      document.querySelector("#submit").addEventListener("click", () => {
+        const answer = document.querySelector("#answer").value.trim().toLowerCase();
+        const human = answer && /^[a-z]+$/.test(answer)
+          ? { id: "human", answer, canonical: answer, status: "valid" }
+          : { id: "human", answer, status: "invalid" };
+        const results = scoreRound([human, ...simulated]);
+        document.querySelector("#results").innerHTML = `<h2>Results</h2><table><tr><th>Player</th><th>Answer</th><th>Points</th></tr>${results.map((player) => `<tr><td>${player.id}</td><td>${player.answer ?? player.canonical ?? "—"}</td><td>${player.collisionPoints ?? "—"}</td></tr>`).join("")}</table>`;
+      });
+    </script>
+  </body>
+</html>

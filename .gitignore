@@ -1,3 +1,12 @@
 # Internal project notes and progress records
 /info
 
+# Node.js generated files
+node_modules/
+coverage/
+
+# Local secrets and environment overrides
+.env
+.env.*
+!.env.example
+
