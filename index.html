@@ -14,6 +14,7 @@
       <input id="answer" autocomplete="off" />
       <button id="submit">Submit round</button>
       <p id="status" aria-live="polite"></p>
+      <section id="session-score" aria-live="polite"><h2>Session total: 0 points</h2></section>
       <section id="round-history"></section>
     </main>
     <script type="module">
@@ -25,6 +26,7 @@
       const session = createSession(["color"], 20);
       const answer = document.querySelector("#answer");
       const status = document.querySelector("#status");
+      const sessionScore = document.querySelector("#session-score");
       const roundHistory = document.querySelector("#round-history");
 
       function escapeHtml(value) {
@@ -35,6 +37,7 @@
         document.querySelector("#round").textContent = session.roundIndex + 1;
         const total = getTotal(session, "human");
         document.title = `wordDotPit — ${total} points`;
+        sessionScore.innerHTML = `<h2>Session total: ${total} points</h2>`;
         roundHistory.innerHTML = [...session.rounds].reverse().map((item) => `<article><h2>Round ${item.round} — color</h2><p>Your collision points: ${item.human?.collisionPoints ?? "—"}</p><details><summary>Answer pipeline</summary><p>raw: ${escapeHtml(item.human?.pipeline.raw)} → repaired: ${escapeHtml(item.human?.pipeline.repaired)} → canonical: ${escapeHtml(item.human?.pipeline.canonical)} → ${escapeHtml(item.human?.pipeline.status)}${item.human?.pipeline.reason ? ` (${escapeHtml(item.human.pipeline.reason)})` : ""}</p></details><table><thead><tr><th>Player</th><th>Answer</th><th>Collision points</th></tr></thead><tbody>${item.players.map((player) => `<tr><td>${escapeHtml(player.id)}</td><td>${escapeHtml(player.answer ?? player.canonical)}</td><td>${player.collisionPoints ?? "—"}</td></tr>`).join("")}</tbody></table></article>`).join("");
       }
 
