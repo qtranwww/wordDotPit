@@ -20,6 +20,7 @@
     <script type="module">
       import { scoreRound } from "./src/engine.js";
       import { createSimulatedPlayers } from "./src/simulated-ai.js";
+      import { processAnswer } from "./src/pipeline.js";
       import { createSession, getTotal, recordRound } from "./src/session.js";
 
       const session = createSession(["color"], 20);
@@ -35,14 +36,16 @@
       function renderState() {
         document.querySelector("#round").textContent = session.roundIndex + 1;
         summary.innerHTML = `<h2>Session total: ${getTotal(session, "human")}</h2>`;
-        roundHistory.innerHTML = [...session.rounds].reverse().map((item) => `<article><h2>Round ${item.round} — color</h2><p>Your collision points: ${item.human?.collisionPoints ?? "—"}</p><table><thead><tr><th>Player</th><th>Answer</th><th>Collision points</th></tr></thead><tbody>${item.players.map((player) => `<tr><td>${escapeHtml(player.id)}</td><td>${escapeHtml(player.answer ?? player.canonical)}</td><td>${player.collisionPoints ?? "—"}</td></tr>`).join("")}</tbody></table></article>`).join("");
+        roundHistory.innerHTML = [...session.rounds].reverse().map((item) => `<article><h2>Round ${item.round} — color</h2><p>Your collision points: ${item.human?.collisionPoints ?? "—"}</p><details><summary>Answer pipeline</summary><p>raw: ${escapeHtml(item.human?.pipeline.raw)} → repaired: ${escapeHtml(item.human?.pipeline.repaired)} → canonical: ${escapeHtml(item.human?.pipeline.canonical)} → ${escapeHtml(item.human?.pipeline.status)}${item.human?.pipeline.reason ? ` (${escapeHtml(item.human.pipeline.reason)})` : ""}</p></details><table><thead><tr><th>Player</th><th>Answer</th><th>Collision points</th></tr></thead><tbody>${item.players.map((player) => `<tr><td>${escapeHtml(player.id)}</td><td>${escapeHtml(player.answer ?? player.canonical)}</td><td>${player.collisionPoints ?? "—"}</td></tr>`).join("")}</tbody></table></article>`).join("");
       }
 
       document.querySelector("#submit").addEventListener("click", () => {
-        const text = answer.value.trim().toLowerCase();
-        const human = text && /^[a-z]+$/.test(text) ? { id: "human", answer: text, canonical: text, status: "valid" } : { id: "human", answer: text, status: "invalid" };
+        const text = answer.value;
+        const pipeline = processAnswer(text, "color");
+        const human = { id: "human", answer: text, canonical: pipeline.canonical, status: pipeline.status, pipeline };
         const scored = scoreRound([human, ...createSimulatedPlayers("color", session.rosterSize)]);
         const item = recordRound(session, "color", scored);
+        item.human.pipeline = pipeline;
         answer.value = "";
         status.textContent = `Round ${item.round} recorded. The newest round is shown first.`;
         renderState();
