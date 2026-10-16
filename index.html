@@ -4,6 +4,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>wordDotPit</title>
+    <style>
+      table { border-spacing: 18px 6px; }
+      th, td { padding: 4px 10px; text-align: left; }
+    </style>
   </head>
   <body>
     <main>
@@ -38,19 +42,37 @@
         const total = getTotal(session, "human");
         document.title = `wordDotPit — ${total} points`;
         sessionScore.innerHTML = `<h2>Session total: ${total} points</h2>`;
-        roundHistory.innerHTML = [...session.rounds].reverse().map((item) => `<article><h2>Round ${item.round} — color</h2><p>Your collision points: ${item.human?.collisionPoints ?? "—"}</p><details><summary>Answer pipeline</summary><p>raw: ${escapeHtml(item.human?.pipeline.raw)} → repaired: ${escapeHtml(item.human?.pipeline.repaired)} → canonical: ${escapeHtml(item.human?.pipeline.canonical)} → ${escapeHtml(item.human?.pipeline.status)}${item.human?.pipeline.reason ? ` (${escapeHtml(item.human.pipeline.reason)})` : ""}</p></details><table><thead><tr><th>Player</th><th>Answer</th><th>Collision points</th></tr></thead><tbody>${item.players.map((player) => `<tr><td>${escapeHtml(player.id)}</td><td>${escapeHtml(player.answer ?? player.canonical)}</td><td>${player.collisionPoints ?? "—"}</td></tr>`).join("")}</tbody></table></article>`).join("");
+        roundHistory.innerHTML = [...session.rounds].reverse().map((item) => `<article><h2>Round ${item.round} — color</h2><p>Your collision points: ${item.human?.collisionPoints ?? "—"}</p><details><summary>Answer pipeline</summary><p>raw: ${escapeHtml(item.human?.pipeline.raw)} → repaired: ${escapeHtml(item.human?.pipeline.repaired)} → canonical: ${escapeHtml(item.human?.pipeline.canonical)} → ${escapeHtml(item.human?.pipeline.status)}${item.human?.pipeline.reason ? ` (${escapeHtml(item.human.pipeline.reason)})` : ""}</p></details><table><thead><tr><th>Player</th><th>Answer</th><th>Status</th><th>Collision points</th><th>Total Collisions</th></tr></thead><tbody>${item.players.map((player) => `<tr><td>${escapeHtml(player.id)}</td><td>${escapeHtml(player.answer ?? player.canonical)}</td><td>${escapeHtml(player.error ?? player.status)}</td><td>${player.collisionPoints ?? "—"}</td><td>${getTotal(session, player.id)}</td></tr>`).join("")}</tbody></table></article>`).join("");
       }
 
-      document.querySelector("#submit").addEventListener("click", () => {
+      async function requestRealAi() {
+        try {
+          const response = await fetch("/api/ai-answer", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ category: "color" }) });
+          if (!response.ok) return { id: "real-ai", status: "no_response", answer: "", error: `http_${response.status}` };
+          const result = await response.json();
+          if (result.status !== "received") return { id: "real-ai", status: "no_response", answer: "", error: result.error };
+          const pipeline = processAnswer(result.raw_answer, "color");
+          return { id: "real-ai", answer: result.raw_answer, canonical: pipeline.canonical, status: pipeline.status, pipeline, latencyMs: result.latency_ms };
+        } catch (error) {
+          return { id: "real-ai", status: "no_response", answer: "", error: error.name };
+        }
+      }
+
+      document.querySelector("#submit").addEventListener("click", async () => {
+        const submitButton = document.querySelector("#submit");
+        submitButton.disabled = true;
+        status.textContent = "Waiting for the real AI...";
         const text = answer.value;
         const pipeline = processAnswer(text, "color");
         const human = { id: "human", answer: text, canonical: pipeline.canonical, status: pipeline.status, pipeline };
-        const scored = scoreRound([human, ...createSimulatedPlayers("color", session.rosterSize)]);
+        const realAi = await requestRealAi();
+        const scored = scoreRound([human, realAi, ...createSimulatedPlayers("color", session.rosterSize)]);
         const item = recordRound(session, "color", scored);
         item.human.pipeline = pipeline;
         answer.value = "";
         status.textContent = `Round ${item.round} recorded. The newest round is shown first.`;
         renderState();
+        submitButton.disabled = false;
       });
 
       renderState();
