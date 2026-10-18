@@ -20,9 +20,10 @@ function isEnglishWord(word) {
   return ENGLISH_WORDS.has(word);
 }
 
-export function canonicalize(word, category) {
+export function canonicalize(word, category, policy = "standard") {
   const lexicon = CATEGORY_LEXICONS[category] ?? new Set();
   if (lexicon.has(word)) return word;
+  if (policy === "strict") return word;
   if (ALIASES.has(word)) return ALIASES.get(word);
   if (!NO_SINGULARIZE.has(word)) {
     const candidates = [];
@@ -38,12 +39,12 @@ export function canonicalize(word, category) {
   return word;
 }
 
-export function processAnswer(rawAnswer, category, { phase = "before-8", decisions = new Map() } = {}) {
+export function processAnswer(rawAnswer, category, { phase = "before-8", decisions = new Map(), policy = "standard" } = {}) {
   const repaired = repairAnswer(rawAnswer);
   if (!repaired) return { raw: rawAnswer ?? "", repaired, canonical: null, status: "invalid", reason: "empty" };
   if (!/^[a-z]{1,45}$/.test(repaired)) return { raw: rawAnswer, repaired, canonical: null, status: "invalid", reason: "format" };
   if (!isEnglishWord(repaired)) return { raw: rawAnswer, repaired, canonical: null, status: "invalid", reason: "not_a_word" };
-  const canonical = canonicalize(repaired, category);
+  const canonical = canonicalize(repaired, category, policy);
   const lexicon = CATEGORY_LEXICONS[category] ?? new Set();
   if (lexicon.has(canonical)) return { raw: rawAnswer, repaired, canonical, status: "valid", reason: null, validationSource: "lexicon" };
   const decision = decisions.get(`${category}:${canonical}`);

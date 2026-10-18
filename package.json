@@ -2,5 +2,5 @@
   "name": "worddotpit",
   "private": true,
   "type": "module",
-  "scripts": { "test": "node --test" }
+  "scripts": { "test": "node --test", "rescore": "node scripts/rescore-run.js", "create-run-config": "node scripts/create-run-config.js" }
 }
