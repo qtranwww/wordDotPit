@@ -12,7 +12,13 @@ const config = freezeRunConfig({
     { configId: "real-ai-default", provider, model, temperature: 0, promptVariant: "plain", count: 5 },
     { configId: "simulated-default", provider: "local", model: "handwritten-weighted-list", temperature: null, promptVariant: "none", count: 20 }
   ],
-  components: { answerPipeline: "1.0", collisionRules: "1.0", wordList: "seed-1", categoryLexicons: "seed-1" }
+  components: {
+    answerPipeline: "1.0",
+    collisionRules: "1.0",
+    dictionary: "dictionary-0.1",
+    englishWordList: "esdb-v2-1e5b7d3a72f47a71da5d28686c1dd4b397178485",
+    categoryLexicons: { color: "color-0.1", animal: "animal-seed-1", country: "country-seed-1" }
+  }
 });
 fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 fs.writeFileSync(outputPath, `${JSON.stringify(config, null, 2)}\n`);

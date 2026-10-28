@@ -1,12 +1,6 @@
-const ENGLISH_WORDS = new Set([
-  "animal", "blue", "brown", "canada", "cat", "color", "country", "cyan", "dog", "dolphin", "gray", "green", "horse", "iceland", "japan", "kenya", "mouse", "nepal", "pangolin", "purple", "red", "sheep", "wolf", "yellow", "mice", "dogs", "wolves", "grey", "hero"
-]);
+import { CATEGORY_LEXICONS, ENGLISH_WORDS } from "./dictionary-data.js";
 
-const CATEGORY_LEXICONS = {
-  color: new Set(["blue", "brown", "cyan", "gray", "green", "purple", "red", "yellow"]),
-  animal: new Set(["cat", "dog", "dolphin", "mouse", "pangolin", "sheep", "wolf"]),
-  country: new Set(["canada", "iceland", "japan", "kenya", "nepal"])
-};
+const CATEGORY_SETS = Object.fromEntries(Object.entries(CATEGORY_LEXICONS).map(([category, words]) => [category, new Set(words)]));
 
 const ALIASES = new Map([["grey", "gray"], ["mice", "mouse"]]);
 const NO_SINGULARIZE = new Set(["news", "species", "series"]);
@@ -21,7 +15,7 @@ function isEnglishWord(word) {
 }
 
 export function canonicalize(word, category, policy = "standard") {
-  const lexicon = CATEGORY_LEXICONS[category] ?? new Set();
+  const lexicon = CATEGORY_SETS[category] ?? new Set();
   if (lexicon.has(word)) return word;
   if (policy === "strict") return word;
   if (ALIASES.has(word)) return ALIASES.get(word);
@@ -45,7 +39,7 @@ export function processAnswer(rawAnswer, category, { phase = "before-8", decisio
   if (!/^[a-z]{1,45}$/.test(repaired)) return { raw: rawAnswer, repaired, canonical: null, status: "invalid", reason: "format" };
   if (!isEnglishWord(repaired)) return { raw: rawAnswer, repaired, canonical: null, status: "invalid", reason: "not_a_word" };
   const canonical = canonicalize(repaired, category, policy);
-  const lexicon = CATEGORY_LEXICONS[category] ?? new Set();
+  const lexicon = CATEGORY_SETS[category] ?? new Set();
   if (lexicon.has(canonical)) return { raw: rawAnswer, repaired, canonical, status: "valid", reason: null, validationSource: "lexicon" };
   const decision = decisions.get(`${category}:${canonical}`);
   if (decision === "member") return { raw: rawAnswer, repaired, canonical, status: "valid", reason: null, validationSource: "cache" };

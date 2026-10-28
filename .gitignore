@@ -5,6 +5,10 @@
 node_modules/
 coverage/
 
+# Python generated files
+__pycache__/
+*.pyc
+
 # Local secrets and environment overrides
 .env
 .env.*

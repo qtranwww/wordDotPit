@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "id": "animal",
+  "name": "Animal",
+  "definition": "A word naming an animal.",
+  "lexicon_version": "animal-seed-1",
+  "accepted_headwords": ["cat", "dog", "dolphin", "mouse", "pangolin", "sheep", "wolf"]
+}

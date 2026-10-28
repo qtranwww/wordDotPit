@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "id": "country",
+  "name": "Country",
+  "definition": "A word naming a country.",
+  "lexicon_version": "country-seed-1",
+  "accepted_headwords": ["canada", "iceland", "japan", "kenya", "nepal"]
+}

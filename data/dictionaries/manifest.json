@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "dictionary_version": "dictionary-0.1",
+  "english_word_list": {
+    "source": "English Speller Database (ESDB), formerly SCOWL v2",
+    "source_commit": "1e5b7d3a72f47a71da5d28686c1dd4b397178485",
+    "selection": "maximum size 60, American spelling, single lowercase a-z entries",
+    "word_count": 90110,
+    "data_file": "english-words.txt",
+    "data_sha256": "8144BBCC13A21CD6333CF97F5561D2A9B34C21CB35BE6D0C8954019614216F1F",
+    "license_file": "ESDB-Copyright.txt"
+  },
+  "category_lexicons": {
+    "color": {
+      "version": "color-0.1",
+      "data_file": "../categories/color.json",
+      "source": "Princeton WordNet 3.0 candidate seed plus project curation",
+      "data_sha256": "C03F392397FA70F296F633D58F190DF8687796D085A37892A6449B5E80D26968",
+      "normalization": "none added in Phase 7"
+    },
+    "animal": {
+      "version": "animal-seed-1",
+      "data_file": "../categories/animal.json",
+      "source": "existing project seed list"
+    },
+    "country": {
+      "version": "country-seed-1",
+      "data_file": "../categories/country.json",
+      "source": "existing project seed list"
+    }
+  }
+}

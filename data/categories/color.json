@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "id": "color",
+  "name": "Color",
+  "definition": "A word naming a color or shade.",
+  "lexicon_version": "color-0.1",
+  "accepted_headwords": [
+    "amber", "amethyst", "auburn", "azure", "beige", "black", "blue", "bronze", "brown", "buff",
+    "canary", "caramel", "carmine", "cerise", "chartreuse", "chestnut", "cinnabar", "coppery", "coral", "crimson",
+    "cyan", "drab", "dun", "ebony", "fuchsia", "gold", "golden", "gray", "green", "hazel", "indigo", "jade",
+    "khaki", "lavender", "lilac", "magenta", "maroon", "mauve", "navy", "ocher", "ochre", "olive", "orange", "peach",
+    "periwinkle", "pink", "plum", "purple", "red", "rose", "ruby", "russet", "rust", "salmon", "scarlet", "sepia",
+    "sienna", "silver", "slate", "tan", "tangerine", "taupe", "teal", "tomato", "turquoise", "ultramarine", "umber",
+    "vermilion", "violet", "white", "wine", "yellow"
+  ],
+  "source_candidates": [
+    "amber", "amethyst", "argent", "ashy", "auburn", "aureate", "avocado", "azure", "beige", "blackish", "blae",
+    "blue", "blueish", "bluish", "blushful", "bronze", "bronzy", "brown", "brownish", "buff", "canary", "canescent",
+    "caramel", "carmine", "carnation", "cerise", "cerulean", "chalky", "charcoal", "chartreuse", "cherry", "chestnut",
+    "cinnabar", "coppery", "coral", "creamy", "cresson", "crimson", "cyan", "drab", "dun", "earthlike", "ebon", "ebony",
+    "fuscous", "gilded", "gilt", "gold", "golden", "green", "greenish", "gray", "grayish", "grey", "greyish", "hazel",
+    "honey", "hueless", "inky", "jade", "jet", "khaki", "lavender", "lilac", "magenta", "maroon", "mauve", "mosstone",
+    "mouselike", "mousey", "mousy", "ocher", "ochre", "olive", "orange", "orangish", "peachy", "pearly", "pink", "pinkish",
+    "pitchy", "purple", "purplish", "red", "reddish", "rosaceous", "rose", "roseate", "rosy", "ruby", "ruddy", "russet",
+    "rust", "rusty", "sable", "sage", "salmon", "sapphire", "scarlet", "silver", "silverish", "silvery", "slatey", "slaty",
+    "snowy", "snuff", "sooty", "sorrel", "stone", "straw", "tan", "tangerine", "tannish", "taupe", "tawny", "teal",
+    "ultramarine", "umber", "vermilion", "vermillion", "vinaceous", "violet", "watercress", "whitish", "xanthous", "yellow",
+    "yellowish"
+  ],
+  "provenance": [
+    {
+      "source": "Princeton WordNet 3.0",
+      "source_version": "3.0",
+      "role": "candidate-seed",
+      "license_file": "../dictionaries/WORDNET-LICENSE.txt"
+    },
+    {
+      "source": "Project curation",
+      "source_version": "color-0.1",
+      "role": "accepted-headwords"
+    }
+  ]
+}
